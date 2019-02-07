@@ -1,4 +1,9 @@
 .App {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
 }
 
@@ -22,10 +27,25 @@
   color: #61dafb;
 }
 
+.taskContainer {
+  width: 100%;
+  height: 100%;
+}
+
+.addTask {
+  position: relative;
+}
+
 .hideList {
   display: none;
 }
+.displayList {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
+}
 .displayList > div:nth-child(2n) {
   background-color: lightgray;
 }
@@ -33,7 +53,7 @@
 .displayList > div {
   display: flex;
   flex-direction: row;
-  width: 85%;
+  width: 60%;
   margin: 2px 0 0 0;
 }
 
@@ -53,6 +73,25 @@
 }
 .complete {
   width: 70%;
+}
+
+.editContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: beige;
+  border: solid black 1px;
+  width: 60%;
+  height: 60%;
+  position: fixed;
+  z-index: 100;
+}
+
+.editInputs {
+  display: flex;
+  flex-direction: column;
+
 }
 
 @keyframes App-logo-spin {

@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import AddTask from './components/addTask/addTask'
+import EditTask from './components/editTask/editTask'
+import routes from './routes'
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <AddTask/>
+        {/* <EditTask/>
+        <AddTask/> */}
+        {routes}
       </div>
     );
   }

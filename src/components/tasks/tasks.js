@@ -1,35 +1,66 @@
-import React from 'react'
+import React, {Component} from 'react'
+import {connect} from 'react-redux'
+import {getTasks, editInputs, deleteTask} from '../../ducks/reducer'
+import {withRouter} from 'react-router-dom'
+import axios from 'axios'
 
-function Tasks (props){
-    let displayList = props.taskList.map(val=>{
+class Tasks extends Component {
+
+    editTask = (task) => {
+        console.log('edt', task)
+        axios.put('/edit', task)
+        .then(res=>{console.log(res.data)
+            this.props.editInputs({task: res.data, display: "flex"})
+        })
+        .then(this.props.history.push('/edit'))
+    }
+    render(){
+        
+        if(this.props.taskList){
+        var displayList = this.props.taskList.map(val=>{
+            return(
+                <div key={val.id} style={{border: 'solid black 2px'}}>
+                    <div className="taskName" onClick={()=>this.editTask(val)}
+                    // style={{textDecoration:`${val.completed}`}}
+                    >
+                    {val.title}
+                    </div>
+                    <div className="buttonContainer">
+                    <button className="complete" disabled={val.completed}
+                        onClick={()=>this.props.completeTask(val.id)}>Completed</button>
+                    <div className="delete" 
+                        onClick={()=>this.props.deleteTask(val.id)}>X</div>
+                    </div>
+                </div>
+            )
+        })}
+    
+
+        let displayClass = !this.props.taskList
+        ?"hideList"
+        :"displayList"
+        
         return(
-            <div key={val.taskId} style={{border: 'solid black 2px'}}>
-                <div className="taskName" style={{textDecoration:`${val.completed}`}}>
-                {val.taskName}
-                </div>
-                <div className="buttonContainer">
-                <button className="complete" disabled={val.button}
-                    onClick={()=>props.completeTask(val.taskId)}>Completed</button>
-                <div className="delete" 
-                    onClick={()=>props.deleteTask(val.taskId)}>X</div>
-                </div>
+            
+            <div className={displayClass}>
+                
+                {displayList}
+                
             </div>
         )
-    })
-
-    let displayClass = !props.taskList
-    ?"hideList"
-    :"displayList"
-    
-    return(
-        
-        <div className={displayClass}>
-            
-            {displayList}
-            
-        </div>
-    )
-        
+    }  
 }
 
-export default Tasks
+const mapStateToProps = (state) =>{
+    return {
+        taskList: state.taskList,
+        editHide: state.editHide
+    }
+}
+
+const mapDispatchToProps ={
+    getTasks, editInputs, deleteTask
+}
+
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Tasks))

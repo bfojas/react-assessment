@@ -1,66 +1,58 @@
 import React, {Component} from 'react'
 import Tasks from '../tasks/tasks'
-import {addTask, updateTask, inputTask} from '../../ducks/reducer'
+import {addTask, updateTask, inputTask, getTasks, deleteTask} from '../../ducks/reducer'
 import {connect} from 'react-redux'
 
 class AddTask extends Component {
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
         this.state={
-            // id: 1,
-            // newTask:' ',
-            // taskList: []
+            inputHandle: ''
         }
     }
 
-    changeHandle = (e) => {
-        // console.log('e', e)
-        this.props.inputTask(e.value) 
+    componentDidMount=()=>{
+        this.props.getTasks()
         
     }
 
-    deleteTask = (taskId) =>{
-
-        let newList = this.props.taskList.filter(val=>
-            val.taskId !== taskId
-            )
-        this.props.updateTask(newList)
+    changeHandle = (e) => {
+        this.setState({inputHandle:e.value}) 
+        
     }
+
 
     completeTask = (taskId) => {
         const {taskList} = this.props
-        let newList = taskList.slice(0, taskList.length)
-        newList.forEach(val=>{
-            if(val.taskId === taskId)
-            {val.completed = 'line-through';
-            val.button = true}
-        })
-        this.props.updateTask(newList)
+        let task = taskList.filter(val=>val.id === taskId)
+        task[0].completed = true
+        this.props.updateTask(task)
+        .then(this.props.getTasks())
 
     }
 
     submitTask=()=>{
-        let newlist= [...this.props.taskList, 
-            {taskName: this.props.newTask, 
-            taskId: this.props.id,
-            completed: 'none',
-            button: false}]
-        // let newId = this.props.id + 1
-        this.props.addTask({taskList: newlist,
-        newTask:''})
+        this.props.addTask(this.state.inputHandle)
+        .then(res=>{this.setState({ inputHandle:""})})
     }
+
+    
 
     render(){
         return(
-            <div>
+            <div className="taskContainer">
                 <div className="addTask">
                     <h1>TO-DO:</h1>
-                    <input value={this.props.newTask} type="text" onChange={e=>{
-                        this.changeHandle(e.target)}}/>
+                    <input 
+                    name="input"
+                    value={this.state.inputHandle} 
+                    type="text" 
+                    onChange={e=>{this.changeHandle(e.target)}}
+                    />
                     <button onClick={()=>this.submitTask()}>Submit</button>
                 </div>
-                <Tasks completeTask={this.completeTask} deleteTask={this.deleteTask} 
-                taskList={this.props.taskList}/>
+                <Tasks completeTask={this.completeTask}  
+                />
             </div>
         )
     }
@@ -75,7 +67,7 @@ const mapStateToProps = (state)=>{
 }
 
 const mapDispatchToProps = {
-    addTask, updateTask, inputTask
+    addTask, updateTask, inputTask, getTasks, deleteTask
 }
 
 
